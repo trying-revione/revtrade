@@ -1,9 +1,11 @@
 import React from 'react';
 
 const OperationPage = () => {
+  // Por ahora lo usare para seguir el tick actual
+  
   return (
     <>
-      Hola operation Page
+      <h1>Tick actual</h1>
     </>
   )
 }
