@@ -37,6 +37,11 @@ export const ticks = (state = defaultState, action) => {
         dataChart: immutablePop(state.dataChart)
       })
     }
+    case 'UPDATE_HISTORY_DATA_CHART': {
+      return Object.assign({}, state, {
+        dataChart: action.data
+      })
+    }
     default: {
       return state;
     }

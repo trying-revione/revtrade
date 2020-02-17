@@ -1,9 +1,13 @@
 import React from 'react';
 import styled from 'styled-components'
 import { Charts } from './index';
+import { Indicators } from './index';
+
 
 const Main = (props) => {
   const { children } = props;
+
+  Indicators();
   
   return (
     <Body>
@@ -11,6 +15,8 @@ const Main = (props) => {
       <Charts>
 
       </Charts>
+
+      {/* <Indicators /> */}
 
 
       {children}

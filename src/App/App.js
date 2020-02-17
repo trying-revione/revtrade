@@ -1,6 +1,6 @@
 import React from 'react';
 import '../App.css';
-import { Binary } from '../_services';
+import { Binary } from '../services';
 import { Header } from '../components';
 import { Main } from '../components'
 
