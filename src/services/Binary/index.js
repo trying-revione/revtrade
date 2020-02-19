@@ -1,1 +1,1 @@
-export { default as Binary } from "./Binary";
+export { default as useBinary } from "./useBinary";

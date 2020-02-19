@@ -1,15 +1,5 @@
 import { combineReducers } from "redux"
-import {ticks} from './Ticks'
-
-const candles = (state = 0, action) => {
-  switch (action.type) {
-    case 'SET_CANDLES': {
-      return action.candles;
-    }
-    default: {
-      return state;
-    }
-  }
-};
+import { ticks } from './ticks.reducer'
+import { candles } from './candles.reducer'
 
 export default combineReducers({ ticks, candles  });

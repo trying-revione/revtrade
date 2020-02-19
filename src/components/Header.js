@@ -11,7 +11,7 @@ const Header = (props) => {
 }
 
 const Menu = styled.header`
-  padding: 2em;
+  padding: 1em;
   background: #40ddef;
   text-align: center;
   font-size: 2em;

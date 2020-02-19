@@ -1,5 +1,10 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { setSubscriptionTick,
+  updateDataChart,
+  deleteOneDataChart,
+  updateHistoryDataChart
+  } from '../../redux/actions/ticks.actions'
 
 const HISTORY_REQUEST = {
   "ticks_history": "R_10",
@@ -11,32 +16,10 @@ const HISTORY_REQUEST = {
   "subscribe": 1
 }
 
-const Binary = () => {
+const useBinary = () => {
   const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=21052');
-
   const state = useSelector(state => state)
-
   const dispatch = useDispatch()
-
-  const setSubscriptionTick = useCallback(
-    (data) => dispatch({ type: 'SET_SUBSCRIPTION_TICK', data }),
-    [dispatch]
-  )
-
-  const updateDataChart = useCallback(
-    (data) => dispatch({ type: 'UPDATE_DATA_CHART', data }),
-    [dispatch]
-  )
-
-  const deleteOneDataChart = useCallback(
-    () => dispatch({ type: 'DELETE_ONE_DATA_CHART' }),
-    [dispatch]
-  )
-
-  const updateHistoryDataChart = useCallback(
-    (data) => dispatch({ type: 'UPDATE_HISTORY_DATA_CHART', data }),
-    [dispatch]
-  )
 
   const preguntasalBroker = (ws, data = {}) => {
     ws.onopen = function(evt) {
@@ -47,8 +30,8 @@ const Binary = () => {
   const subscription = (data ) => {
     const tick = data.tick.ask
     const epoch = data.tick.epoch
-    setSubscriptionTick(data)
-    updateDataChart({x: epoch, y: tick})
+    dispatch(setSubscriptionTick(data))
+    dispatch(updateDataChart({x: epoch, y: tick}))
   }
 
   const history = (data) => {
@@ -59,7 +42,7 @@ const Binary = () => {
       newArray.push(obj);
     });
     console.log('newArray  ::   ', newArray);
-    updateHistoryDataChart(newArray)
+    dispatch(updateHistoryDataChart(newArray))
 
   }
   
@@ -95,7 +78,7 @@ const Binary = () => {
 
   useEffect(() => {
     if (state.ticks.dataChart.length >= 50) {
-      deleteOneDataChart()
+      dispatch(deleteOneDataChart())
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.ticks.dataChart])
@@ -103,4 +86,4 @@ const Binary = () => {
   return (<></>)
 }
 
-export default Binary;
+export default useBinary;

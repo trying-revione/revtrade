@@ -16,9 +16,6 @@ const Main = (props) => {
 
       </Charts>
 
-      {/* <Indicators /> */}
-
-
       {children}
     </Body>
   )
