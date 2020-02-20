@@ -16,14 +16,31 @@ const HISTORY_REQUEST = {
   "subscribe": 1
 }
 
+const BUY_CONTRACT = {
+  "buy": 1,
+  "price": 0.35,
+  "parameters": {
+    "amount": 0.35,
+    "basis": "stake",
+    "contract_type": "CALL",
+    "currency": "EUR",
+    "duration": 2,
+    "duration_unit": "m",
+    "symbol": "R_10"
+  }
+}
+
+
+const AUTHORIZE = { "authorize": "bO5mK2pZjixPevp" }
+
 const useBinary = () => {
   const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=21052');
   const state = useSelector(state => state)
   const dispatch = useDispatch()
 
-  const preguntasalBroker = (ws, data = {}) => {
+  const brokerRequest = (data = {}) => {
     ws.onopen = function(evt) {
-      ws.send(JSON.stringify(data));
+      ws.send(JSON.stringify(data))
     };
   }
   
@@ -41,13 +58,14 @@ const useBinary = () => {
       const obj = {x: history.times[i], y: e}
       newArray.push(obj);
     });
-    console.log('newArray  ::   ', newArray);
     dispatch(updateHistoryDataChart(newArray))
-
   }
   
   const casosDeUso = (msg_type, data) => {
-    console.log()
+    if (msg_type !== 'tick' && msg_type !== 'history' ) {
+      console.log(`${msg_type}  :: `, data)
+      debugger
+    }
       switch (msg_type) {
         case 'history':
           history(data)
@@ -55,14 +73,32 @@ const useBinary = () => {
         case 'tick':
           subscription(data)
           break;
-    
+        case 'buy':
+          contractBought()
         default:
+          doSomething()
           break;
     }
   }
 
+  function doSomething (msg_type, data) {
+    console.log('msg_type', msg_type)
+    console.log('data', data)
+    debugger
+  }
+
+  function purchase () {
+    history(BUY_CONTRACT)
+    console.log('parece que ya se hizo el contrato')
+  }
+
+  function contractBought () {
+    console.log('Se hizo un contrato')
+  }
+
   useEffect(() => {
-    preguntasalBroker(ws, HISTORY_REQUEST)
+    // primeras preguntas al brocker
+    brokerRequest(HISTORY_REQUEST)
     
   // TODO:: Hacer algo con este caso
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,7 +107,7 @@ const useBinary = () => {
   useEffect(() => {
     ws.onmessage = function(msg) {
        var data = JSON.parse(msg.data);
-      console.log('data  ::   ', data);
+      // console.log('data  ::   ', data);
       casosDeUso(data.msg_type, data)
     };
   });
@@ -82,6 +118,17 @@ const useBinary = () => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.ticks.dataChart])
+
+  useEffect((type) => {
+    switch(type) {
+      case 'buy':
+          // purchase()
+          console.log('aqui estamos en purchase')
+        break;
+      default:
+        break;
+    }
+  }, [state.actions])
 
   return (<></>)
 }
