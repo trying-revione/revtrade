@@ -1,15 +1,11 @@
 import React from 'react';
 import styled from 'styled-components'
-import { Charts, Indicators, Buttons } from './index'
-import { useSelector, useDispatch } from 'react-redux'
+import { Charts, Indicators, Buttons, Form } from './index'
+import { useSelector } from 'react-redux'
 
 const Main = (props) => {
   const { children } = props;
   const indicators = useSelector(state => state.indicators)
-
-  debugger
-
-
   Indicators();
   
   return (
@@ -24,6 +20,8 @@ const Main = (props) => {
       <h2>
         EMA :: {indicators.ema}
       </h2>
+
+      <Form />
 
       <Buttons />
 

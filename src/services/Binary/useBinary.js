@@ -5,6 +5,7 @@ import { setSubscriptionTick,
   deleteOneDataChart,
   updateHistoryDataChart
   } from '../../redux/actions/ticks.actions'
+  import { setAuthorize } from '../../redux/actions/authorize.actions'
 
 const HISTORY_REQUEST = {
   "ticks_history": "R_10",
@@ -30,7 +31,6 @@ const BUY_CONTRACT = {
   }
 }
 
-
 const AUTHORIZE = { "authorize": "bO5mK2pZjixPevp" }
 
 const useBinary = () => {
@@ -39,9 +39,15 @@ const useBinary = () => {
   const dispatch = useDispatch()
 
   const brokerRequest = (data = {}) => {
-    ws.onopen = function(evt) {
-      ws.send(JSON.stringify(data))
-    };
+    if (ws.readyState === 1 ) { ws.send(JSON.stringify(data)) }
+    else {
+      debugger
+    }
+  }
+
+  const authorize = (data) => {
+    dispatch(setAuthorize(data.authorize))
+    brokerRequest(HISTORY_REQUEST)
   }
   
   const subscription = (data ) => {
@@ -62,22 +68,27 @@ const useBinary = () => {
   }
   
   const casosDeUso = (msg_type, data) => {
-    if (msg_type !== 'tick' && msg_type !== 'history' ) {
-      console.log(`${msg_type}  :: `, data)
-      debugger
-    }
-      switch (msg_type) {
-        case 'history':
-          history(data)
-          break;
-        case 'tick':
-          subscription(data)
-          break;
-        case 'buy':
-          contractBought()
-        default:
-          doSomething()
-          break;
+    // if (msg_type !== 'tick' && msg_type !== 'history' ) {
+    //   console.log(`${msg_type}  :: `, data)
+    //   debugger
+    // }
+
+    switch (msg_type) {
+      case 'authorize':
+        authorize(data)
+        break;
+      case 'history':
+        history(data)
+        break;
+      case 'tick':
+        subscription(data)
+        break;
+      case 'buy':
+        contractBought()
+        break;
+      default:
+        doSomething()
+        break;
     }
   }
 
@@ -87,21 +98,20 @@ const useBinary = () => {
     debugger
   }
 
-  function purchase () {
-    history(BUY_CONTRACT)
-    console.log('parece que ya se hizo el contrato')
-  }
+  // function purchase () {
+  //   history(BUY_CONTRACT)
+  //   console.log('parece que ya se hizo el contrato')
+  // }
 
   function contractBought () {
     console.log('Se hizo un contrato')
   }
 
   useEffect(() => {
-    // primeras preguntas al brocker
-    brokerRequest(HISTORY_REQUEST)
-    
-  // TODO:: Hacer algo con este caso
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    ws.onopen = function(evt) {
+      console.log('WebSocket is open now.')
+      brokerRequest(AUTHORIZE)
+    };
   }, []);
 
   useEffect(() => {
@@ -111,6 +121,14 @@ const useBinary = () => {
       casosDeUso(data.msg_type, data)
     };
   });
+
+  // useEffect(() => {
+  //   // primeras preguntas al brocker
+  //   brokerRequest(HISTORY_REQUEST)
+    
+  // // TODO:: Hacer algo con este caso
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [state.authorize]);
 
   useEffect(() => {
     if (state.ticks.dataChart.length >= 50) {

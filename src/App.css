@@ -48,3 +48,9 @@ main {
   margin: 20px;
   text-align: center;
 }
+
+input[type="number"] {
+  margin: 10px;
+  width: 25px;
+  padding: 5px;
+}
