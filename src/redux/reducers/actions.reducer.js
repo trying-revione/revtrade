@@ -1,4 +1,4 @@
-export const accions = (state = '', action) => {
+export const actions = (state = '', action) => {
   switch (action.type) {
     case 'SET_ACTION': {
       return action.payload;

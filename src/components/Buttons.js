@@ -9,7 +9,6 @@ const Buttons = () => {
   const dispatch = useDispatch()
 
   function comprarUnContrato () {
-    console.log('comprar el contrato')
     dispatch(setAction('buy'))
   }
 

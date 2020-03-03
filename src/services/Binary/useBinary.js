@@ -41,7 +41,10 @@ const useBinary = () => {
   const brokerRequest = (data = {}) => {
     if (ws.readyState === 1 ) { ws.send(JSON.stringify(data)) }
     else {
-      debugger
+      ws.onopen = function(evt) {
+        console.log('WebSocket is open egain.')
+        ws.send(JSON.stringify(data))
+      };
     }
   }
 
@@ -72,7 +75,6 @@ const useBinary = () => {
     //   console.log(`${msg_type}  :: `, data)
     //   debugger
     // }
-
     switch (msg_type) {
       case 'authorize':
         authorize(data)
@@ -84,6 +86,7 @@ const useBinary = () => {
         subscription(data)
         break;
       case 'buy':
+        debugger
         contractBought()
         break;
       default:
@@ -95,13 +98,11 @@ const useBinary = () => {
   function doSomething (msg_type, data) {
     console.log('msg_type', msg_type)
     console.log('data', data)
-    debugger
   }
 
-  // function purchase () {
-  //   history(BUY_CONTRACT)
-  //   console.log('parece que ya se hizo el contrato')
-  // }
+  function purchase () {
+    brokerRequest(BUY_CONTRACT)
+  }
 
   function contractBought () {
     console.log('Se hizo un contrato')
@@ -122,14 +123,6 @@ const useBinary = () => {
     };
   });
 
-  // useEffect(() => {
-  //   // primeras preguntas al brocker
-  //   brokerRequest(HISTORY_REQUEST)
-    
-  // // TODO:: Hacer algo con este caso
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [state.authorize]);
-
   useEffect(() => {
     if (state.ticks.dataChart.length >= 50) {
       dispatch(deleteOneDataChart())
@@ -137,11 +130,10 @@ const useBinary = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.ticks.dataChart])
 
-  useEffect((type) => {
-    switch(type) {
+  useEffect( () => {
+    switch(state.actions) {
       case 'buy':
-          // purchase()
-          console.log('aqui estamos en purchase')
+          purchase()
         break;
       default:
         break;

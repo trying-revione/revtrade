@@ -13,13 +13,13 @@ const Main = (props) => {
 
       <Charts />
 
-      <h2>
+      {/* <h2>
         SMA :: {indicators.sma}
       </h2>
 
       <h2>
         EMA :: {indicators.ema}
-      </h2>
+      </h2> */}
 
       <Form />
 
